@@ -28,8 +28,7 @@ public class Api {
 
 	@PostConstruct
 	public void init() {
-		System.out.println("Startuje komponent api");
-
+		LOG.info("Startuje api");
 	}
 
 	public Api() {
@@ -38,6 +37,7 @@ public class Api {
 
 	@RequestMapping(method = { RequestMethod.POST })
 	public User create(@RequestBody User userData) {
+		LOG.info("inserting data");
 		return userRepository.insert(userData);
 		// sprawdzic metody
 	}
