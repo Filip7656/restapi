@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 @SuppressWarnings("serial")
 public class User implements Serializable {
 	@Id
+	private String uid;
 	private String email;
 	private String firstName;
 	private String lastName;
@@ -14,6 +15,14 @@ public class User implements Serializable {
 
 	public User() {
 		super();
+	}
+
+	public String getUid() {
+		return uid;
+	}
+
+	public void setUid(String uid) {
+		this.uid = uid;
 	}
 
 	public String getFirstName() {

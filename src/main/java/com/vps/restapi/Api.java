@@ -1,12 +1,16 @@
 package com.vps.restapi;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,10 +21,9 @@ import com.vps.restapi.model.UserRepository;
 
 //mapowanie rest
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/json")
 public class Api {
-	public static String data;
-	public static String data_log;
 	private static final Logger LOG = LoggerFactory.getLogger(Api.class);
 
 	@Autowired
@@ -31,15 +34,37 @@ public class Api {
 		LOG.info("Startuje api");
 	}
 
-	public Api() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@RequestMapping(method = { RequestMethod.POST })
+<<<<<<< HEAD
 	public User create(@RequestBody User userData) {
 		LOG.info("inserting data");
 		return userRepository.insert(userData);
 		// sprawdzic metody
+=======
+	public ResponseEntity<User> create(@RequestBody User userData) {
+		// ==================================================================
+		LOG.info("user received");
+		// ==================================================================
+		String email = userData.getEmail();
+		if (email == null || email.isEmpty()) {
+			// ==================================================================
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("empty email");
+			}
+			// ==================================================================
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		Optional<User> userFromDatabase = userRepository.findById(email);
+		if (userFromDatabase.isPresent()) {
+			// ==================================================================
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("user already exist: " + email);
+			}
+			// ==================================================================
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+		return ResponseEntity.ok(userRepository.insert(userData));
+>>>>>>> developer
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
