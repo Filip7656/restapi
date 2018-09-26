@@ -35,12 +35,6 @@ public class Api {
 	}
 
 	@RequestMapping(method = { RequestMethod.POST })
-<<<<<<< HEAD
-	public User create(@RequestBody User userData) {
-		LOG.info("inserting data");
-		return userRepository.insert(userData);
-		// sprawdzic metody
-=======
 	public ResponseEntity<User> create(@RequestBody User userData) {
 		// ==================================================================
 		LOG.info("user received");
@@ -64,7 +58,6 @@ public class Api {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		return ResponseEntity.ok(userRepository.insert(userData));
->>>>>>> developer
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
