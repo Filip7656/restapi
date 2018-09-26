@@ -24,8 +24,6 @@ import com.vps.restapi.model.UserRepository;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/json")
 public class Api {
-	public static String data;
-	public static String data_log;
 	private static final Logger LOG = LoggerFactory.getLogger(Api.class);
 
 	@Autowired
