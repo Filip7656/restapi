@@ -59,7 +59,6 @@ public class Api {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-
 	public List<User> getAll() {
 		return userRepository.findAll();
 	}
