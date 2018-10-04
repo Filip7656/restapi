@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vps.restapi.model.User;
 import com.vps.restapi.model.UserRepository;
+import com.vps.restapi.utils.UserUtils;
 
 //mapowanie rest
 @RestController
@@ -46,7 +47,7 @@ public class Api {
 			// ==================================================================
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
-		Optional<User> userFromDatabase = userRepository.findById(email);
+		Optional<User> userFromDatabase = userRepository.findById(userData.getUid());
 		if (userFromDatabase.isPresent()) {
 			// ==================================================================
 			if (LOG.isDebugEnabled()) {
@@ -63,4 +64,25 @@ public class Api {
 		return userRepository.findAll();
 	}
 
+	@RequestMapping(path = "/update", method = RequestMethod.PUT)
+	public ResponseEntity<User> update(@RequestBody User userData) {
+		Optional<User> userFromDatabase = userRepository.findById(userData.getUid());
+		if (!userFromDatabase.isPresent()) {
+			// ==================================================================
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("User not found by: " + userData.getEmail());
+			}
+			// ==================================================================
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		User user = userFromDatabase.get();
+		if (UserUtils.checkIfEqual(userData, user)) {
+			LOG.info("No change in user");
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+
+		}
+		userData.setUid(user.getUid());
+		return ResponseEntity.ok(userRepository.save(user));
+
+	}
 }
