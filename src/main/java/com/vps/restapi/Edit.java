@@ -30,14 +30,9 @@ public class Edit {
 
 	@RequestMapping(method = { RequestMethod.PUT })
 	public ResponseEntity<User> create(@RequestBody User userData) {
-		Optional<User> userFromDatabase = userRepository.findById(userData.getEmail());
-		if (userData.equals(userRepository.findById(userData.getEmail()))) {
-			LOG.info("No change");
-		} else {
-
-		}
-		if (!userFromDatabase.isPresent()) {
-			LOG.error("User does not exist");
+		Optional<User> userFromDatabase = userRepository.findById(userData.getUid());
+		if (userFromDatabase.equals(userData)) {
+			LOG.info("No change in user");
 		}
 
 		return ResponseEntity.ok(userRepository.save(userData));
