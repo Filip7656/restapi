@@ -82,7 +82,7 @@ public class Api {
 
 		}
 		userData.setUid(user.getUid());
-		return ResponseEntity.ok(userRepository.save(user));
+		return ResponseEntity.ok(userRepository.save(userData));
 
 	}
 }
