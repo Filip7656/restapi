@@ -21,7 +21,7 @@ import com.vps.restapi.utils.UserUtils;
 
 //mapowanie rest
 @RestController
-@RequestMapping("/json")
+@RequestMapping("/user")
 public class Api {
 	private static final Logger LOG = LoggerFactory.getLogger(Api.class);
 
@@ -47,16 +47,25 @@ public class Api {
 			// ==================================================================
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
-		Optional<User> userFromDatabase = userRepository.findById(userData.getUid());
-		if (userFromDatabase.isPresent()) {
-			// ==================================================================
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("user already exist: " + email);
+
+		String uid = userData.getUid();
+		if (uid == null || uid.isEmpty()) {
+			return ResponseEntity.ok(userRepository.insert(userData));
+
+		} else {
+			Optional<User> userFromDatabase = userRepository.findById(userData.getUid());
+
+			if (userFromDatabase.isPresent()) {
+				// ==================================================================
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("user already exist: " + email);
+				}
+				// ==================================================================
+				return ResponseEntity.status(HttpStatus.CONFLICT).build();
 			}
-			// ==================================================================
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
-		return ResponseEntity.ok(userRepository.insert(userData));
+		return ResponseEntity.status(HttpStatus.OK).build();
+
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
@@ -83,6 +92,26 @@ public class Api {
 		}
 		userData.setUid(user.getUid());
 		return ResponseEntity.ok(userRepository.save(userData));
+
+	}
+
+	@RequestMapping(path = "/delete", method = RequestMethod.PUT)
+	public ResponseEntity<User> delete(@RequestBody User userData) {
+		Optional<User> userFromDatabase = userRepository.findById(userData.getUid());
+		if (!userFromDatabase.isPresent()) {
+			// ==================================================================
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("User not found by: " + userData.getEmail());
+			}
+			// ==================================================================
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		User user = userFromDatabase.get();
+		userData.setUid(user.getUid());
+		userRepository.deleteById(userData.getUid());
+		LOG.info("User Deleted :" + userData.getEmail());
+
+		return ResponseEntity.ok(userData);
 
 	}
 }
