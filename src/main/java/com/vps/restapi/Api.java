@@ -51,7 +51,7 @@ public class Api {
 		}
 		String uid = userData.getUid();
 		if (uid == null || uid.isEmpty()) {
-			EmailSender.sendSimpleEmail(userData);
+			EmailSender.newAccountEmail(userData);
 			return ResponseEntity.ok(userRepository.insert(userData));
 
 		} else {
@@ -76,7 +76,7 @@ public class Api {
 	}
 
 	@RequestMapping(path = "/update", method = RequestMethod.PUT)
-	public ResponseEntity<User> update(@RequestBody User userData) {
+	public ResponseEntity<User> update(@RequestBody User userData) throws EmailException {
 		Optional<User> userFromDatabase = userRepository.findById(userData.getUid());
 		if (!userFromDatabase.isPresent()) {
 			// ==================================================================
@@ -93,12 +93,14 @@ public class Api {
 
 		}
 		userData.setUid(user.getUid());
+		LOG.info("User edited");
+		EmailSender.editAccountEmail(userFromDatabase, userData);
 		return ResponseEntity.ok(userRepository.save(userData));
 
 	}
 
 	@RequestMapping(path = "/delete", method = RequestMethod.PUT)
-	public ResponseEntity<User> delete(@RequestBody User userData) {
+	public ResponseEntity<User> delete(@RequestBody User userData) throws EmailException {
 		Optional<User> userFromDatabase = userRepository.findById(userData.getUid());
 		if (!userFromDatabase.isPresent()) {
 			// ==================================================================
@@ -111,6 +113,7 @@ public class Api {
 		User user = userFromDatabase.get();
 		userData.setUid(user.getUid());
 		userRepository.deleteById(userData.getUid());
+
 		LOG.info("User Deleted :" + userData.getEmail());
 
 		return ResponseEntity.ok(userData);
