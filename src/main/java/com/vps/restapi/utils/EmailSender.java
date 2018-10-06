@@ -16,7 +16,7 @@ public class EmailSender {
 	public static void sendSimpleEmail(User user1) throws EmailException {
 		// zapytac o exception
 		String userName = "fchlebowski@gmail.com";
-		String password = "Dupa1234";
+		String password = "*********";
 		String host = "smtp.gmail.com";
 		int port = 465;
 		String fromAddress = "noreply@service.com";

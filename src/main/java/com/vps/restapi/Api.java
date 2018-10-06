@@ -6,8 +6,8 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.mail.EmailException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ import com.vps.restapi.utils.UserUtils;
 @RestController
 @RequestMapping("/user")
 public class Api {
-	private static final Logger LOG = LoggerFactory.getLogger(Api.class);
+	private static final Logger LOG = LogManager.getLogger(Api.class);
 
 	@Autowired
 	private UserRepository userRepository;
