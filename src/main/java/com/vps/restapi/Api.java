@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vps.restapi.model.User;
 import com.vps.restapi.model.UserRepository;
+import com.vps.restapi.utils.EmailSender;
 import com.vps.restapi.utils.UserUtils;
 
 //mapowanie rest
@@ -47,10 +48,9 @@ public class Api {
 			// ==================================================================
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
-
 		String uid = userData.getUid();
 		if (uid == null || uid.isEmpty()) {
-
+			EmailSender.sendSimpleEmail(userData);
 			return ResponseEntity.ok(userRepository.insert(userData));
 
 		} else {
