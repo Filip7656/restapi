@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.mail.EmailException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class Api {
 	}
 
 	@RequestMapping(method = { RequestMethod.POST })
-	public ResponseEntity<User> create(@RequestBody User userData) {
+	public ResponseEntity<User> create(@RequestBody User userData) throws EmailException {
 		// ==================================================================
 		LOG.info("user received");
 		// ==================================================================

@@ -1,8 +1,9 @@
 package com.vps.restapi.utils;
 
-import org.apache.commons.mail.DefaultAuthenticator;
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.SimpleEmail;
+import java.io.File;
+
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.HtmlEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,10 +13,10 @@ import com.vps.restapi.model.User;
 public class EmailSender {
 	private static final Logger LOG = LoggerFactory.getLogger(Api.class);
 
-	public static void sendSimpleEmail(User user1) {
-
+	public static void sendSimpleEmail(User user1) throws EmailException {
+		// zapytac o exception
 		String userName = "fchlebowski@gmail.com";
-		String password = "*********";
+		String password = "Dupa1234";
 		String host = "smtp.gmail.com";
 		int port = 465;
 		String fromAddress = "noreply@service.com";
@@ -23,21 +24,31 @@ public class EmailSender {
 		String subject = "Hello " + user1.getFirstName();
 		String message = "Hello " + user1.getFirstName() + " " + user1.getLastName();
 
+		HtmlEmail he = new HtmlEmail();
+		File img = new File("C://Users/filip/Downloads/doors.jpg");
+
+		StringBuffer msg = new StringBuffer();
+		msg.append("<html><body>");
+		msg.append("<img src=cid:").append(he.embed(img)).append(">");
+		msg.append("<br>");
+		msg.append(message);
+		msg.append("</br>");
+		msg.append("</body></html>");
+
 		try {
-			Email email = new SimpleEmail();
-			email.setHostName(host);
-			email.setSmtpPort(port);
-			email.setAuthenticator(new DefaultAuthenticator(userName, password));
-			email.setSSLOnConnect(true);
-			email.setFrom(fromAddress);
-			email.setSubject(subject);
-			email.setMsg(message);
+			he.setHostName(host);
+			he.setSmtpPort(port);
+			he.setAuthentication(userName, password);
+			he.setSSLOnConnect(true);
+			he.setFrom(fromAddress);
+			he.setSubject(subject);
+			he.setHtmlMsg(msg.toString());
+			he.addTo(toAddress);
+			he.send();
 			LOG.info("email send to :" + user1.getEmail());
-			email.addTo(toAddress);
-			email.send();
 		} catch (Exception ex) {
-			System.out.println("Unable to send email");
-			System.out.println(ex);
+			LOG.error("Unable to send email : " + ex);
 		}
+
 	}
 }
