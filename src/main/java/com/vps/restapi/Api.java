@@ -50,6 +50,7 @@ public class Api {
 
 		String uid = userData.getUid();
 		if (uid == null || uid.isEmpty()) {
+
 			return ResponseEntity.ok(userRepository.insert(userData));
 
 		} else {
