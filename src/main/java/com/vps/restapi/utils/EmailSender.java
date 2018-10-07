@@ -14,13 +14,15 @@ import com.vps.restapi.model.User;
 public class EmailSender {
 	private static final Logger LOG = LoggerFactory.getLogger(Api.class);
 
+	public static String userName = "fchlebowski@gmail.com";
+	public static String password = "*********";
+	public static String host = "smtp.gmail.com";
+	public static int port = 465;
+	public static String fromAddress = "noreply@service.com";
+
 	public static void newAccountEmail(User user1) throws EmailException {
 		// zapytac o exception
-		String userName = "fchlebowski@gmail.com";
-		String password = "*********";
-		String host = "smtp.gmail.com";
-		int port = 465;
-		String fromAddress = "noreply@service.com";
+
 		String toAddress = user1.getEmail();
 		String subject = "Hello " + user1.getFirstName();
 		String message = "Hello " + user1.getFirstName() + " " + user1.getLastName();
@@ -55,13 +57,7 @@ public class EmailSender {
 
 	public static void editAccountEmail(Optional<User> userFromDatabase, User userNew) throws EmailException {
 		User userOld = userFromDatabase.get();
-
-		String userName = "fchlebowski@gmail.com";
-		String password = "*********";
-		String host = "smtp.gmail.com";
-		String toAddress = userOld.getEmail();
-		int port = 465;
-		String fromAddress = "noreply@service.com";
+		String toAddress = userNew.getEmail();
 		String subject = "Hello " + userOld.getFirstName();
 		String message = "<h1>Hello " + userOld.getFirstName() + " " + userOld.getLastName()
 				+ " your account was edited</h1>";
