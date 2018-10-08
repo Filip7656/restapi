@@ -111,6 +111,7 @@ public class Api {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		User user = userFromDatabase.get();
+		EmailSender.deleteAccountEmail(userFromDatabase, userData);
 		userData.setUid(user.getUid());
 		userRepository.deleteById(userData.getUid());
 

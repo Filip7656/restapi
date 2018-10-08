@@ -27,11 +27,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/filip/Documents/JavaSpring/restapi/target/commons-email-1.5/commons-email-1.5.jar"/>
-	<classpathentry kind="lib" path="C:/Users/filip/Documents/JavaSpring/restapi/target/commons-email-1.5/commons-email-1.5-javadoc.jar"/>
-	<classpathentry kind="lib" path="C:/Users/filip/Documents/JavaSpring/restapi/target/commons-email-1.5/commons-email-1.5-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/filip/Documents/JavaSpring/restapi/target/commons-email-1.5/commons-email-1.5-tests.jar"/>
-	<classpathentry kind="lib" path="C:/Users/filip/Documents/JavaSpring/restapi/target/commons-email-1.5/commons-email-1.5-test-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Mail"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

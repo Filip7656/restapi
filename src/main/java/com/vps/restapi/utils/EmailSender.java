@@ -14,8 +14,8 @@ import com.vps.restapi.model.User;
 public class EmailSender {
 	private static final Logger LOG = LoggerFactory.getLogger(Api.class);
 
-	public static String userName = "fchlebowski@gmail.com";
-	public static String password = "*********";
+	static String userName = "fchlebowski@gmail.com";
+	public static String password = "*****";
 	public static String host = "smtp.gmail.com";
 	public static int port = 465;
 	public static String fromAddress = "noreply@service.com";
@@ -26,7 +26,6 @@ public class EmailSender {
 		String toAddress = user1.getEmail();
 		String subject = "Hello " + user1.getFirstName();
 		String message = "Hello " + user1.getFirstName() + " " + user1.getLastName();
-
 		HtmlEmail he = new HtmlEmail();
 		File img = new File("C://Users/filip/Downloads/doors.jpg");
 
@@ -83,6 +82,41 @@ public class EmailSender {
 		msg.append("<h3>" + lastNameChange + "</h3>");
 		msg.append("<h3>" + passwordChange + "</h3>");
 
+		msg.append("</body></html>");
+
+		try {
+			he.setHostName(host);
+			he.setSmtpPort(port);
+			he.setAuthentication(userName, password);
+			he.setSSLOnConnect(true);
+			he.setFrom(fromAddress);
+			he.setSubject(subject);
+			he.setHtmlMsg(msg.toString());
+			he.addTo(toAddress);
+			he.send();
+			LOG.info("email send to :" + userOld.getEmail());
+		} catch (Exception ex) {
+			LOG.error("Unable to send email : " + ex);
+		}
+
+	}
+
+	public static void deleteAccountEmail(Optional<User> userFromDatabase, User userNew) throws EmailException {
+		User userOld = userFromDatabase.get();
+		String toAddress = userNew.getEmail();
+		String subject = "Hello " + userOld.getFirstName();
+		String message = "<h1>Hello</h1><br><h1> " + userOld.getFirstName() + " " + userOld.getLastName()
+				+ " your account was deleted</h1>";
+
+		HtmlEmail he = new HtmlEmail();
+		// File img = new File("C://Users/filip/Downloads/doors.jpg");
+
+		StringBuffer msg = new StringBuffer();
+		msg.append("<html><body>");
+		// msg.append("<img src=cid:").append(he.embed(img)).append(">");
+		msg.append("<br>");
+		msg.append(message);
+		msg.append("</br>");
 		msg.append("</body></html>");
 
 		try {
