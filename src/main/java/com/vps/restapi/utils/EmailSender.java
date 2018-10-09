@@ -15,10 +15,11 @@ public class EmailSender {
 	private static final Logger LOG = LoggerFactory.getLogger(Api.class);
 
 	static String userName = "fchlebowski@gmail.com";
-	public static String password = "*****";
-	public static String host = "smtp.gmail.com";
-	public static int port = 465;
-	public static String fromAddress = "noreply@service.com";
+	static String password = "*****";
+	static String host = "smtp.gmail.com";
+	static int port = 465;
+	static String fromAddress = "noreply@service.com";
+	static HtmlEmail he = new HtmlEmail();
 
 	public static void newAccountEmail(User user1) throws EmailException {
 		// zapytac o exception
@@ -26,7 +27,6 @@ public class EmailSender {
 		String toAddress = user1.getEmail();
 		String subject = "Hello " + user1.getFirstName();
 		String message = "Hello " + user1.getFirstName() + " " + user1.getLastName();
-		HtmlEmail he = new HtmlEmail();
 		File img = new File("C://Users/filip/Downloads/doors.jpg");
 
 		StringBuffer msg = new StringBuffer();
@@ -68,7 +68,6 @@ public class EmailSender {
 		String passwordChange = "Previous password: " + userOld.getPassword() + "<br> New password: "
 				+ userNew.getPassword();
 
-		HtmlEmail he = new HtmlEmail();
 		// File img = new File("C://Users/filip/Downloads/doors.jpg");
 
 		StringBuffer msg = new StringBuffer();
@@ -108,7 +107,6 @@ public class EmailSender {
 		String message = "<h1>Hello</h1><br><h1> " + userOld.getFirstName() + " " + userOld.getLastName()
 				+ " your account was deleted</h1>";
 
-		HtmlEmail he = new HtmlEmail();
 		// File img = new File("C://Users/filip/Downloads/doors.jpg");
 
 		StringBuffer msg = new StringBuffer();

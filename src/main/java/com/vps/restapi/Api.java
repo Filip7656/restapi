@@ -9,6 +9,7 @@ import org.apache.commons.mail.EmailException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.SpringVersion;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +33,7 @@ public class Api {
 
 	@PostConstruct
 	public void init() {
-		LOG.info("Startuje api");
+		LOG.info("Startuje api" +SpringVersion.getVersion());
 	}
 
 	@RequestMapping(method = { RequestMethod.POST })
