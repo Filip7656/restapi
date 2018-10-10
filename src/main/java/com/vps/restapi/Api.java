@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.SpringVersion;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,7 +34,7 @@ public class Api {
 
 	@PostConstruct
 	public void init() {
-		LOG.info("Startuje api" +SpringVersion.getVersion());
+		LOG.info("Startuje api" + SpringVersion.getVersion());
 	}
 
 	@RequestMapping(method = { RequestMethod.POST })
@@ -100,25 +101,24 @@ public class Api {
 
 	}
 
-	@RequestMapping(path = "/delete", method = RequestMethod.PUT)
-	public ResponseEntity<User> delete(@RequestBody User userData) throws EmailException {
-		Optional<User> userFromDatabase = userRepository.findById(userData.getUid());
+	@RequestMapping(path = "/delete/{userId}", method = RequestMethod.DELETE)
+	public ResponseEntity<User> delete(@PathVariable("userId") String userId) throws EmailException {
+		Optional<User> userFromDatabase = userRepository.findById(userId);
 		if (!userFromDatabase.isPresent()) {
 			// ==================================================================
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("User not found by: " + userData.getEmail());
+				LOG.debug("User not found by: " + userId);
 			}
 			// ==================================================================
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		User user = userFromDatabase.get();
-		EmailSender.deleteAccountEmail(userFromDatabase, userData);
-		userData.setUid(user.getUid());
-		userRepository.deleteById(userData.getUid());
+		EmailSender.deleteAccountEmail(userFromDatabase, user);
+		userRepository.deleteById(userId);
 
-		LOG.info("User Deleted :" + userData.getEmail());
+		LOG.info("User Deleted :" + userId);
 
-		return ResponseEntity.ok(userData);
+		return ResponseEntity.ok(user);
 
 	}
 }

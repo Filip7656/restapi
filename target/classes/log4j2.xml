@@ -13,5 +13,14 @@
             <AppenderRef ref="Console" />
             <AppenderRef ref="MyFile"/>
         </Root>
+    
     </Loggers>
+    <Loggers>
+        <Root level="info" name="org.springframework">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="MyFile"/>
+        </Root>
+    </Loggers>
+
+    
 </Configuration>
