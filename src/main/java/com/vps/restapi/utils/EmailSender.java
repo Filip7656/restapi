@@ -11,6 +11,9 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.vps.restapi.model.User;
 
@@ -111,12 +114,12 @@ public class EmailSender {
 		}
 	}
 
-	
-	// wyciagnac emaila do pliku, zrobic szablon freemaker dla nazw uzytkownika itp, uzytkownik nie usuwany ale zmiana aktywnosci
-	// mail z aktywacja konta 
-	// metoda w api ktora przyjmie token zweryfikuje, czy ma uzytkownik go przypisanego i jezeli tak to najs
-	
-	
+	// wyciagnac emaila do pliku, zrobic szablon freemaker dla nazw uzytkownika itp,
+	// uzytkownik nie usuwany ale zmiana aktywnosci
+	// mail z aktywacja konta
+	// metoda w api ktora przyjmie token zweryfikuje, czy ma uzytkownik go
+	// przypisanego i jezeli tak to najs
+
 	private static HtmlEmail initHtmlEmail() throws EmailException {
 		HtmlEmail he = new HtmlEmail();
 		he.setHostName(host);
@@ -127,13 +130,14 @@ public class EmailSender {
 		return he;
 	}
 	// linijka do redirectu
-	
 
-	// get action destination view identity
-			String redirectUrl = accountService.resolveActionDestination(requestId, "postUserAccountConfirmation");
-			// prepare and return redirect
-			HttpHeaders headers = new HttpHeaders();
-			headers.add("Location", redirectUrl);
-			return new ResponseEntity<Void>(headers, HttpStatus.SEE_OTHER);
+	private static ResponseEntity<Void> reDiretct() {
 
+		// get action destination view identity
+		String redirectUrl = accountService.resolveActionDestination(requestId, "postUserAccountConfirmation");
+		// prepare and return redirect
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Location", redirectUrl);
+		return new ResponseEntity<Void>(headers, HttpStatus.SEE_OTHER);
+	}
 }
