@@ -13,8 +13,8 @@ import com.vps.restapi.model.User;
 public class EmailSender {
 	private static final Logger LOG = LoggerFactory.getLogger(EmailSender.class);
 
-	static String userName = "piotrchojnowski90@gmail.com";
-	static String password = "trapattoni";
+	static String userName = "ducha321@wp.pl";
+	static String password = "klucz12";
 	static String host = "smtp.gmail.com";
 	static int port = 465;
 	static String fromAddress = "noreply@service.com";
