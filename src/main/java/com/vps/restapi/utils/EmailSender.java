@@ -111,6 +111,12 @@ public class EmailSender {
 		}
 	}
 
+	
+	// wyciagnac emaila do pliku, zrobic szablon freemaker dla nazw uzytkownika itp, uzytkownik nie usuwany ale zmiana aktywnosci
+	// mail z aktywacja konta 
+	// metoda w api ktora przyjmie token zweryfikuje, czy ma uzytkownik go przypisanego i jezeli tak to najs
+	
+	
 	private static HtmlEmail initHtmlEmail() throws EmailException {
 		HtmlEmail he = new HtmlEmail();
 		he.setHostName(host);
@@ -120,4 +126,14 @@ public class EmailSender {
 		he.setFrom(fromAddress);
 		return he;
 	}
+	// linijka do redirectu
+	
+
+	// get action destination view identity
+			String redirectUrl = accountService.resolveActionDestination(requestId, "postUserAccountConfirmation");
+			// prepare and return redirect
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("Location", redirectUrl);
+			return new ResponseEntity<Void>(headers, HttpStatus.SEE_OTHER);
+
 }
