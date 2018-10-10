@@ -13,5 +13,18 @@
             <AppenderRef ref="Console" />
             <AppenderRef ref="MyFile"/>
         </Root>
+<<<<<<< HEAD
     </Loggers>
+=======
+    
+    </Loggers>
+    <Loggers>
+        <Root level="info" name="org.springframework">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="MyFile"/>
+        </Root>
+    </Loggers>
+
+    
+>>>>>>> FilipDev
 </Configuration>

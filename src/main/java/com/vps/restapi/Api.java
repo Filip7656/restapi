@@ -12,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.SpringVersion;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+<<<<<<< HEAD
+=======
+import org.springframework.web.bind.annotation.PathVariable;
+>>>>>>> FilipDev
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,7 +37,11 @@ public class Api {
 
 	@PostConstruct
 	public void init() {
+<<<<<<< HEAD
 		LOG.info("Startuje api" +SpringVersion.getVersion());
+=======
+		LOG.info("Startuje api" + SpringVersion.getVersion());
+>>>>>>> FilipDev
 	}
 
 	@RequestMapping(method = { RequestMethod.POST })
@@ -100,6 +108,7 @@ public class Api {
 
 	}
 
+<<<<<<< HEAD
 	@RequestMapping(path = "/delete", method = RequestMethod.PUT)
 	public ResponseEntity<User> delete(@RequestBody User userData) throws EmailException {
 		Optional<User> userFromDatabase = userRepository.findById(userData.getUid());
@@ -107,11 +116,21 @@ public class Api {
 			// ==================================================================
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("User not found by: " + userData.getEmail());
+=======
+	@RequestMapping(path = "/delete/{userId}", method = RequestMethod.DELETE)
+	public ResponseEntity<User> delete(@PathVariable("userId") String userId) throws EmailException {
+		Optional<User> userFromDatabase = userRepository.findById(userId);
+		if (!userFromDatabase.isPresent()) {
+			// ==================================================================
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("User not found by: " + userId);
+>>>>>>> FilipDev
 			}
 			// ==================================================================
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		User user = userFromDatabase.get();
+<<<<<<< HEAD
 		EmailSender.deleteAccountEmail(userFromDatabase, userData);
 		userData.setUid(user.getUid());
 		userRepository.deleteById(userData.getUid());
@@ -119,6 +138,14 @@ public class Api {
 		LOG.info("User Deleted :" + userData.getEmail());
 
 		return ResponseEntity.ok(userData);
+=======
+		EmailSender.deleteAccountEmail(userFromDatabase, user);
+		userRepository.deleteById(userId);
+
+		LOG.info("User Deleted :" + userId);
+
+		return ResponseEntity.ok(user);
+>>>>>>> FilipDev
 
 	}
 }
