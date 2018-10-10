@@ -24,7 +24,7 @@ import com.vps.restapi.utils.UserUtils;
 
 //mapowanie rest
 @RestController
-@RequestMapping("/useer")
+@RequestMapping("/user")
 public class Api {
 	private static final Logger LOG = LogManager.getLogger(Api.class);
 
