@@ -8,11 +8,10 @@ import org.apache.commons.mail.HtmlEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vps.restapi.Api;
 import com.vps.restapi.model.User;
 
 public class EmailSender {
-	private static final Logger LOG = LoggerFactory.getLogger(Api.class);
+	private static final Logger LOG = LoggerFactory.getLogger(EmailSender.class);
 
 	static String userName = "fchlebowski@gmail.com";
 	static String password = "*****";
