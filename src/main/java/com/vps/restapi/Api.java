@@ -53,6 +53,7 @@ public class Api {
 		}
 		String uid = userData.getUid();
 		if (uid == null || uid.isEmpty()) {
+			userData.setActive(true);
 			EmailSender.newAccountEmail(userData);
 			return ResponseEntity.ok(userRepository.insert(userData));
 
@@ -112,13 +113,33 @@ public class Api {
 			// ==================================================================
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-		User user = userFromDatabase.get();
-		EmailSender.deleteAccountEmail(userFromDatabase, user);
-		userRepository.deleteById(userId);
+		User userDeleted = userFromDatabase.get();
+		userDeleted.setActive(false);
+		EmailSender.deleteAccountEmail(userDeleted);
 
-		LOG.info("User Deleted :" + userId);
+		LOG.info("User Deleted :" + userDeleted.getEmail());
 
-		return ResponseEntity.ok(user);
+		return ResponseEntity.ok(userRepository.save(userDeleted));
+
+	}
+
+	@RequestMapping(path = "/{userUid}")
+	public ResponseEntity<User> checkConfirmationEmail(@PathVariable("userUid") String userUid) throws EmailException {
+		Optional<User> userFromDatabase = userRepository.findById(userUid);
+		if (!userFromDatabase.isPresent()) {
+			// ==================================================================
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("User not found by: " + userUid);
+			}
+			// ==================================================================
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		User userConfirmed = userFromDatabase.get();
+		userConfirmed.setConfirmed(true);
+
+		LOG.info("User Confirmed :" + userConfirmed.getEmail());
+
+		return ResponseEntity.ok(userRepository.save(userConfirmed));
 
 	}
 }

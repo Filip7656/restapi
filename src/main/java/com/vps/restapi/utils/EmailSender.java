@@ -21,21 +21,20 @@ public class EmailSender {
 	private static final Logger LOG = LoggerFactory.getLogger(EmailSender.class);
 
 	static String userName = "fchlebowski@gmail.com";
-	static String password = "*****";
+	static String password = "&&";
 	static String host = "smtp.gmail.com";
 	static int port = 465;
 	static String fromAddress = "noreply@service.com";
 
 	public static void newAccountEmail(User userNew) throws EmailException {
 		// zapytac o exception
-
 		String subject = "Hello " + userNew.getFirstName();
 		String message = "Hello " + userNew.getFirstName() + " " + userNew.getLastName();
-
+		String confirmation = "<br>Yr conf link: http://localhost:8080/user" + userNew.getUid();
 		StringBuffer msg = new StringBuffer();
 		msg.append("<html><body>");
 		msg.append("<br>");
-		msg.append(message);
+		msg.append(message + confirmation);
 		msg.append("</br>");
 		msg.append("</body></html>");
 
@@ -77,10 +76,9 @@ public class EmailSender {
 
 	}
 
-	public static void deleteAccountEmail(Optional<User> userFromDatabase, User userNew) throws EmailException {
-		User userOld = userFromDatabase.get();
-		String subject = "Hello " + userOld.getFirstName();
-		String message = "<h1>Hello</h1><br><h1> " + userOld.getFirstName() + " " + userOld.getLastName()
+	public static void deleteAccountEmail(User userDeleted) throws EmailException {
+		String subject = "Hello " + userDeleted.getFirstName();
+		String message = "<h1>Hello</h1><br><h1> " + userDeleted.getFirstName() + " " + userDeleted.getLastName()
 				+ " your account was deleted</h1>";
 
 		StringBuffer msg = new StringBuffer();
@@ -94,7 +92,7 @@ public class EmailSender {
 		Map<String, File> imagesToEmbed = new HashMap<>();
 		File img = new File("C://Users/filip/Downloads/doors.jpg");
 		imagesToEmbed.put(img.getName(), img);
-		sendEmail(initHtmlEmail(), userNew.getEmail(), subject, msg.toString(), imagesToEmbed);
+		sendEmail(initHtmlEmail(), userDeleted.getEmail(), subject, msg.toString(), imagesToEmbed);
 	}
 
 	private static void sendEmail(HtmlEmail htmlEmail, String toAddress, String subject, String message,
@@ -134,7 +132,7 @@ public class EmailSender {
 	private static ResponseEntity<Void> reDiretct() {
 
 		// get action destination view identity
-		String redirectUrl = accountService.resolveActionDestination(requestId, "postUserAccountConfirmation");
+		String redirectUrl = null;
 		// prepare and return redirect
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Location", redirectUrl);

@@ -6,3 +6,5 @@ spring:
      database: dane
      port: 27017
      host: localhost
+spring.freemarker.template-loader-path: classpath:/resources
+spring.freemarker.suffix: .ftl

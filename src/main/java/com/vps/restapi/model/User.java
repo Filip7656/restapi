@@ -12,6 +12,8 @@ public class User implements Serializable {
 	private String firstName;
 	private String lastName;
 	private String password;
+	private Boolean active;
+	private Boolean confirmed;
 
 	public User() {
 		super();
@@ -57,6 +59,14 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -80,6 +90,14 @@ public class User implements Serializable {
 		} else if (!uid.equals(other.uid))
 			return false;
 		return true;
+	}
+
+	public Boolean getConfirmed() {
+		return confirmed;
+	}
+
+	public void setConfirmed(boolean confirmed) {
+		this.confirmed = confirmed;
 	}
 
 }
