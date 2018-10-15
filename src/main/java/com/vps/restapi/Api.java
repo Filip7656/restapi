@@ -2,6 +2,7 @@ package com.vps.restapi;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import javax.annotation.PostConstruct;
 
@@ -43,6 +44,7 @@ public class Api {
 		LOG.info("user received");
 		// ==================================================================
 		String email = userData.getEmail();
+		userData.setToken(RandomInt());
 		if (email == null || email.isEmpty()) {
 			// ==================================================================
 			if (LOG.isDebugEnabled()) {
@@ -79,7 +81,7 @@ public class Api {
 	}
 
 	@RequestMapping(path = "/update", method = RequestMethod.PUT)
-	public ResponseEntity<User> update(@RequestBody User userData) throws EmailException {
+	public ResponseEntity<User> update(@RequestBody User userData) throws Exception {
 		Optional<User> userFromDatabase = userRepository.findById(userData.getUid());
 		if (!userFromDatabase.isPresent()) {
 			// ==================================================================
@@ -123,23 +125,39 @@ public class Api {
 
 	}
 
-	@RequestMapping(path = "/{userUid}")
-	public ResponseEntity<User> checkConfirmationEmail(@PathVariable("userUid") String userUid) throws EmailException {
-		Optional<User> userFromDatabase = userRepository.findById(userUid);
+	@RequestMapping(path = "/{token}")
+	public ResponseEntity<User> checkConfirmationEmail(@PathVariable("token") int token) throws EmailException {
+
+		Optional<User> userFromDatabase = userRepository.findByToken(token);
 		if (!userFromDatabase.isPresent()) {
 			// ==================================================================
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("User not found by: " + userUid);
+				LOG.debug("User not found by: " + token);
 			}
 			// ==================================================================
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		User userConfirmed = userFromDatabase.get();
-		userConfirmed.setConfirmed(true);
+		Boolean confirmed = userConfirmed.getConfirmed();
+		if (confirmed == null) {
+			userConfirmed.setConfirmed(true);
+			EmailSender.confirmationAccountEmail(userConfirmed);
+			LOG.info("User Confirmed :" + userConfirmed.getEmail());
+			return ResponseEntity.ok(userRepository.save(userConfirmed));
+		}
+		// ==================================================================
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("User already confirmed by: " + token);
+		}
+		// ==================================================================
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 
-		LOG.info("User Confirmed :" + userConfirmed.getEmail());
+	}
 
-		return ResponseEntity.ok(userRepository.save(userConfirmed));
+	private int RandomInt() {
+		Random rand = new Random();
 
+		int n = rand.nextInt(999999) + 1;
+		return n;
 	}
 }

@@ -11,11 +11,15 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.vps.restapi.model.ConfigurationFreemarker;
 import com.vps.restapi.model.User;
+
+import freemarker.template.Configuration;
 
 public class EmailSender {
 	private static final Logger LOG = LoggerFactory.getLogger(EmailSender.class);
@@ -26,11 +30,14 @@ public class EmailSender {
 	static int port = 465;
 	static String fromAddress = "noreply@service.com";
 
+	@Autowired
+	private static Configuration freemarkerConfig;
+
 	public static void newAccountEmail(User userNew) throws EmailException {
 		// zapytac o exception
 		String subject = "Hello " + userNew.getFirstName();
 		String message = "Hello " + userNew.getFirstName() + " " + userNew.getLastName();
-		String confirmation = "<br>Yr conf link: http://localhost:8080/" + userNew.getUid();
+		String confirmation = "<br>Yr conf link: http://localhost:8080/user/" + userNew.getToken();
 		StringBuffer msg = new StringBuffer();
 		msg.append("<html><body>");
 		msg.append("<br>");
@@ -38,11 +45,13 @@ public class EmailSender {
 		msg.append("</br>");
 		msg.append("</body></html>");
 
+		// Template t = freemarkerConfig.getTemplate("EmailTemplate.ftl");
+		// String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, userNew);
 		sendEmail(initHtmlEmail(), userNew.getEmail(), subject, msg.toString(), Collections.emptyMap());
 
 	}
 
-	public static void editAccountEmail(Optional<User> userFromDatabase, User userNew) throws EmailException {
+	public static void editAccountEmail(Optional<User> userFromDatabase, User userNew) throws Exception {
 
 		User userOld = userFromDatabase.get();
 		String subject = "Hello " + userOld.getFirstName();
@@ -68,9 +77,10 @@ public class EmailSender {
 		msg.append("<h3>" + passwordChange + "</h3>");
 
 		msg.append("</body></html>");
+		ConfigurationFreemarker.templateSet(userNew);
 
 		Map<String, File> imagesToEmbed = new HashMap<>();
-		File img = new File("C://Users/Piotr/Desktop/filip.png");
+		File img = new File("C://Users/filip/Downloads/doors.jpg");
 		imagesToEmbed.put(img.getName(), img);
 		sendEmail(initHtmlEmail(), userNew.getEmail(), subject, msg.toString(), imagesToEmbed);
 
@@ -90,9 +100,24 @@ public class EmailSender {
 		msg.append("</body></html>");
 
 		Map<String, File> imagesToEmbed = new HashMap<>();
-		File img = new File("C://Users/Piotr/Desktop/filip.png");
+		File img = new File("C://Users/filip/Downloads/doors.jpg");
 		imagesToEmbed.put(img.getName(), img);
 		sendEmail(initHtmlEmail(), userDeleted.getEmail(), subject, msg.toString(), imagesToEmbed);
+	}
+
+	public static void confirmationAccountEmail(User userConfirmed) throws EmailException {
+		String subject = "Account Confirmation";
+		String message = "<h1>" + userConfirmed.getFirstName() + "!" + "</h1>"
+				+ "<h1>Your account has been verified</h1>";
+
+		StringBuffer msg = new StringBuffer();
+		msg.append("<html><body>");
+		msg.append("<br>");
+		msg.append(message);
+		msg.append("</br>");
+		msg.append("</body></html>");
+
+		sendEmail(initHtmlEmail(), userConfirmed.getEmail(), subject, msg.toString(), Collections.emptyMap());
 	}
 
 	private static void sendEmail(HtmlEmail htmlEmail, String toAddress, String subject, String message,
@@ -129,10 +154,10 @@ public class EmailSender {
 	}
 	// linijka do redirectu
 
-	private static ResponseEntity<Void> reDiretct() {
+	private static ResponseEntity<Void> reDirect() {
 
 		// get action destination view identity
-		String redirectUrl = null;
+		String redirectUrl = "http://www.localhost:4200";
 		// prepare and return redirect
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Location", redirectUrl);

@@ -14,6 +14,7 @@ public class User implements Serializable {
 	private String password;
 	private Boolean active;
 	private Boolean confirmed;
+	private int token;
 
 	public User() {
 		super();
@@ -23,8 +24,8 @@ public class User implements Serializable {
 		return uid;
 	}
 
-	public void setUid(String uid) {
-		this.uid = uid;
+	public void setUid(String i) {
+		this.uid = i;
 	}
 
 	public String getFirstName() {
@@ -98,6 +99,14 @@ public class User implements Serializable {
 
 	public void setConfirmed(boolean confirmed) {
 		this.confirmed = confirmed;
+	}
+
+	public int getToken() {
+		return token;
+	}
+
+	public void setToken(int RandomInt) {
+		this.token = RandomInt;
 	}
 
 }
