@@ -20,8 +20,8 @@ import com.vps.restapi.model.User;
 public class EmailSender {
 	private static final Logger LOG = LoggerFactory.getLogger(EmailSender.class);
 
-	static String userName = "fchlebowski@gmail.com";
-	static String password = "&&";
+	static String userName = "piotrchojnowski90@gmail.com";
+	static String password = "trapattoni";
 	static String host = "smtp.gmail.com";
 	static int port = 465;
 	static String fromAddress = "noreply@service.com";
@@ -30,7 +30,7 @@ public class EmailSender {
 		// zapytac o exception
 		String subject = "Hello " + userNew.getFirstName();
 		String message = "Hello " + userNew.getFirstName() + " " + userNew.getLastName();
-		String confirmation = "<br>Yr conf link: http://localhost:8080/user" + userNew.getUid();
+		String confirmation = "<br>Yr conf link: http://localhost:8080/" + userNew.getUid();
 		StringBuffer msg = new StringBuffer();
 		msg.append("<html><body>");
 		msg.append("<br>");
@@ -70,7 +70,7 @@ public class EmailSender {
 		msg.append("</body></html>");
 
 		Map<String, File> imagesToEmbed = new HashMap<>();
-		File img = new File("C://Users/filip/Downloads/doors.jpg");
+		File img = new File("C://Users/Piotr/Desktop/filip.png");
 		imagesToEmbed.put(img.getName(), img);
 		sendEmail(initHtmlEmail(), userNew.getEmail(), subject, msg.toString(), imagesToEmbed);
 
@@ -90,7 +90,7 @@ public class EmailSender {
 		msg.append("</body></html>");
 
 		Map<String, File> imagesToEmbed = new HashMap<>();
-		File img = new File("C://Users/filip/Downloads/doors.jpg");
+		File img = new File("C://Users/Piotr/Desktop/filip.png");
 		imagesToEmbed.put(img.getName(), img);
 		sendEmail(initHtmlEmail(), userDeleted.getEmail(), subject, msg.toString(), imagesToEmbed);
 	}
