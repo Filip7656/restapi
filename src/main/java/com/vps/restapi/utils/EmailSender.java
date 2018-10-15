@@ -24,8 +24,8 @@ import freemarker.template.Configuration;
 public class EmailSender {
 	private static final Logger LOG = LoggerFactory.getLogger(EmailSender.class);
 
-	static String userName = "piotrchojnowski90@gmail.com";
-	static String password = "trapattoni";
+	static String userName = "spring.rest.email.service@gmail.com";
+	static String password = "Qwerty!123";
 	static String host = "smtp.gmail.com";
 	static int port = 465;
 	static String fromAddress = "noreply@service.com";
