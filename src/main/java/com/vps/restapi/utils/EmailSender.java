@@ -37,7 +37,7 @@ public class EmailSender {
 		// zapytac o exception
 		String subject = "Hello " + userNew.getFirstName();
 		String message = "Hello " + userNew.getFirstName() + " " + userNew.getLastName();
-		String confirmation = "<br>Yr conf link: http://localhost:8080/user" + userNew.getToken();
+		String confirmation = "<br>Yr conf link: http://localhost:8080/user/" + userNew.getToken();
 		StringBuffer msg = new StringBuffer();
 		msg.append("<html><body>");
 		msg.append("<br>");

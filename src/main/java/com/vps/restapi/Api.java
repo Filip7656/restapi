@@ -1,6 +1,5 @@
 package com.vps.restapi;
 
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -45,7 +44,7 @@ public class Api {
 		LOG.info("user received");
 		// ==================================================================
 		String email = userData.getEmail();
-		userData.setToken("0912301293" + RandomString());
+		userData.setToken(RandomInt());
 		if (email == null || email.isEmpty()) {
 			// ==================================================================
 			if (LOG.isDebugEnabled()) {
@@ -55,7 +54,7 @@ public class Api {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 		String uid = userData.getUid();
-		if (uid.isEmpty() || uid == null) {
+		if (uid == null || uid.isEmpty()) {
 			userData.setActive(true);
 			EmailSender.newAccountEmail(userData);
 			return ResponseEntity.ok(userRepository.insert(userData));
@@ -126,13 +125,13 @@ public class Api {
 
 	}
 
-	@RequestMapping(path = "/{userUid}")
-	public ResponseEntity<User> checkConfirmationEmail(@PathVariable("userUid") String userUid) throws EmailException {
-		Optional<User> userFromDatabase = userRepository.findById(userUid);
+	@RequestMapping(path = "/{token}")
+	public ResponseEntity<User> checkConfirmationEmail(@PathVariable("token") int token) throws EmailException {
+		Optional<User> userFromDatabase = userRepository.findByToken(token);
 		if (!userFromDatabase.isPresent()) {
 			// ==================================================================
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("User not found by: " + userUid);
+				LOG.debug("User not found by: " + token);
 			}
 			// ==================================================================
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -146,11 +145,10 @@ public class Api {
 
 	}
 
-	private String RandomString() {
-		byte[] array = new byte[7]; // length is bounded by 7
-		new Random().nextBytes(array);
-		String generatedString = new String(array, Charset.forName("UTF-8"));
+	private int RandomInt() {
+		Random rand = new Random();
 
-		return generatedString;
+		int n = rand.nextInt(999999) + 1;
+		return n;
 	}
 }
