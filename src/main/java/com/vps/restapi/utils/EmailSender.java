@@ -11,26 +11,33 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.vps.restapi.model.ConfigurationFreemarker;
 import com.vps.restapi.model.User;
+
+import freemarker.template.Configuration;
 
 public class EmailSender {
 	private static final Logger LOG = LoggerFactory.getLogger(EmailSender.class);
 
 	static String userName = "fchlebowski@gmail.com";
-	static String password = "&&";
+	static String password = "Dupa1234";
 	static String host = "smtp.gmail.com";
 	static int port = 465;
 	static String fromAddress = "noreply@service.com";
+
+	@Autowired
+	private static Configuration freemarkerConfig;
 
 	public static void newAccountEmail(User userNew) throws EmailException {
 		// zapytac o exception
 		String subject = "Hello " + userNew.getFirstName();
 		String message = "Hello " + userNew.getFirstName() + " " + userNew.getLastName();
-		String confirmation = "<br>Yr conf link: http://localhost:8080/user" + userNew.getUid();
+		String confirmation = "<br>Yr conf link: http://localhost:8080/user" + userNew.getToken();
 		StringBuffer msg = new StringBuffer();
 		msg.append("<html><body>");
 		msg.append("<br>");
@@ -38,11 +45,13 @@ public class EmailSender {
 		msg.append("</br>");
 		msg.append("</body></html>");
 
+		// Template t = freemarkerConfig.getTemplate("EmailTemplate.ftl");
+		// String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, userNew);
 		sendEmail(initHtmlEmail(), userNew.getEmail(), subject, msg.toString(), Collections.emptyMap());
 
 	}
 
-	public static void editAccountEmail(Optional<User> userFromDatabase, User userNew) throws EmailException {
+	public static void editAccountEmail(Optional<User> userFromDatabase, User userNew) throws Exception {
 
 		User userOld = userFromDatabase.get();
 		String subject = "Hello " + userOld.getFirstName();
@@ -68,6 +77,7 @@ public class EmailSender {
 		msg.append("<h3>" + passwordChange + "</h3>");
 
 		msg.append("</body></html>");
+		ConfigurationFreemarker.templateSet(userNew);
 
 		Map<String, File> imagesToEmbed = new HashMap<>();
 		File img = new File("C://Users/filip/Downloads/doors.jpg");
@@ -129,7 +139,7 @@ public class EmailSender {
 	}
 	// linijka do redirectu
 
-	private static ResponseEntity<Void> reDiretct() {
+	private static ResponseEntity<Void> reDirect() {
 
 		// get action destination view identity
 		String redirectUrl = null;

@@ -1,7 +1,9 @@
 package com.vps.restapi;
 
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import javax.annotation.PostConstruct;
 
@@ -43,6 +45,7 @@ public class Api {
 		LOG.info("user received");
 		// ==================================================================
 		String email = userData.getEmail();
+		userData.setToken("0912301293" + RandomString());
 		if (email == null || email.isEmpty()) {
 			// ==================================================================
 			if (LOG.isDebugEnabled()) {
@@ -52,7 +55,7 @@ public class Api {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 		String uid = userData.getUid();
-		if (uid == null || uid.isEmpty()) {
+		if (uid.isEmpty() || uid == null) {
 			userData.setActive(true);
 			EmailSender.newAccountEmail(userData);
 			return ResponseEntity.ok(userRepository.insert(userData));
@@ -79,7 +82,7 @@ public class Api {
 	}
 
 	@RequestMapping(path = "/update", method = RequestMethod.PUT)
-	public ResponseEntity<User> update(@RequestBody User userData) throws EmailException {
+	public ResponseEntity<User> update(@RequestBody User userData) throws Exception {
 		Optional<User> userFromDatabase = userRepository.findById(userData.getUid());
 		if (!userFromDatabase.isPresent()) {
 			// ==================================================================
@@ -141,5 +144,13 @@ public class Api {
 
 		return ResponseEntity.ok(userRepository.save(userConfirmed));
 
+	}
+
+	private String RandomString() {
+		byte[] array = new byte[7]; // length is bounded by 7
+		new Random().nextBytes(array);
+		String generatedString = new String(array, Charset.forName("UTF-8"));
+
+		return generatedString;
 	}
 }

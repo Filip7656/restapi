@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Hello ${userNew.getEmail}!</title>
+    <title>Hello ${firstName}!</title>
     <link href="/css/main.css" rel="stylesheet">
 </head>
 <body>
-    <h2 class="hello-title">Hello ${userData.getFirstName}!</h2>
+    <h2 class="hello-title">Hello ${firstName} ${lastName}!</h2>
     <script src="/js/main.js"></script>
 </body>
 </html>
