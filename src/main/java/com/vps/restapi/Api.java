@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.SpringVersion;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -143,14 +144,21 @@ public class Api {
 			userConfirmed.setConfirmed(true);
 			EmailSender.confirmationAccountEmail(userConfirmed);
 			LOG.info("User Confirmed :" + userConfirmed.getEmail());
-			return ResponseEntity.ok(userRepository.save(userConfirmed));
+			ResponseEntity.ok(userRepository.save(userConfirmed));
+		} else {
+			// ==================================================================
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("User already confirmed by: " + token);
+			}
+			ResponseEntity.status(HttpStatus.CREATED).build();
 		}
 		// ==================================================================
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("User already confirmed by: " + token);
-		}
-		// ==================================================================
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		// get action destination view identity
+		String redirectUrl = "http://localhost:4200/";
+		// prepare and return redirect
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Location", redirectUrl);
+		return new ResponseEntity<User>(headers, HttpStatus.SEE_OTHER);
 
 	}
 

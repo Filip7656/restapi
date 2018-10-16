@@ -12,9 +12,6 @@ import org.apache.commons.mail.HtmlEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import com.vps.restapi.model.ConfigurationFreemarker;
 import com.vps.restapi.model.User;
@@ -154,13 +151,4 @@ public class EmailSender {
 	}
 	// linijka do redirectu
 
-	private static ResponseEntity<Void> reDirect() {
-
-		// get action destination view identity
-		String redirectUrl = "http://www.localhost:4200";
-		// prepare and return redirect
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Location", redirectUrl);
-		return new ResponseEntity<Void>(headers, HttpStatus.SEE_OTHER);
-	}
 }
