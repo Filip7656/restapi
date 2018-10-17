@@ -149,6 +149,5 @@ public class EmailSender {
 		he.setFrom(fromAddress);
 		return he;
 	}
-	// linijka do redirectu
 
 }
