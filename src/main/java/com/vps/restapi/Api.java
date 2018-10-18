@@ -139,7 +139,7 @@ public class Api {
 		User userConfirmed = userFromDatabase.get();
 		userConfirmed.setConfirmed(true);
 
-		LOG.info("User Confirmed : " + userConfirmed.getEmail());
+		LOG.info("User Confirmed :" + userConfirmed.getEmail());
 
 		return ResponseEntity.ok(userRepository.save(userConfirmed));
 
@@ -148,7 +148,7 @@ public class Api {
 	private int RandomInt() {
 		Random rand = new Random();
 
-		int n = rand.nextInt(999999) + 10000;
+		int n = rand.nextInt(999999) + 1;
 		return n;
 	}
 }
