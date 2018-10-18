@@ -1,6 +1,7 @@
 package com.vps.restapi.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,11 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import com.vps.restapi.model.ConfigurationFreemarker;
 import com.vps.restapi.model.User;
 
 import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 public class EmailSender {
 	private static final Logger LOG = LoggerFactory.getLogger(EmailSender.class);
@@ -45,9 +49,17 @@ public class EmailSender {
 		msg.append("</br>");
 		msg.append("</body></html>");
 
-		// Template t = freemarkerConfig.getTemplate("EmailTemplate.ftl");
-		// String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, userNew);
-		sendEmail(initHtmlEmail(), userNew.getEmail(), subject, msg.toString(), Collections.emptyMap());
+		File template = new File("/resources");
+		try {
+			freemarkerConfig.setDirectoryForTemplateLoading(template);
+			Template emailTemplate = freemarkerConfig.getTemplate("EmailTemplate.ftl");
+			String html = FreeMarkerTemplateUtils.processTemplateIntoString(emailTemplate, userNew);
+			sendEmail(initHtmlEmail(), userNew.getEmail(), subject, html, Collections.emptyMap());
+
+		} catch (IOException | TemplateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
