@@ -6,9 +6,9 @@ import org.springframework.data.annotation.Id;
 
 @SuppressWarnings("serial")
 public class User implements Serializable {
-	private String email;
 	@Id
 	private String uid;
+	private String email;
 	private String firstName;
 	private String lastName;
 	private String password;
@@ -60,6 +60,7 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
+<<<<<<< HEAD
 	public Boolean getActive() {
 		return active;
 	}
@@ -109,4 +110,6 @@ public class User implements Serializable {
 		this.token = RandomInt;
 	}
 
+=======
+>>>>>>> PiotrDev
 }

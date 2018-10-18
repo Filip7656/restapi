@@ -6,14 +6,12 @@ import java.util.Random;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.mail.EmailException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.SpringVersion;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,25 +19,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vps.restapi.model.User;
 import com.vps.restapi.model.UserRepository;
-import com.vps.restapi.utils.EmailSender;
-import com.vps.restapi.utils.UserUtils;
 
 //mapowanie rest
 @RestController
-@RequestMapping("/user")
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/json")
 public class Api {
-	private static final Logger LOG = LogManager.getLogger(Api.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Api.class);
 
 	@Autowired
 	private UserRepository userRepository;
 
 	@PostConstruct
 	public void init() {
-		LOG.info("Startuje api" + SpringVersion.getVersion());
+		LOG.info("Startuje api");
 	}
 
 	@RequestMapping(method = { RequestMethod.POST })
-	public ResponseEntity<User> create(@RequestBody User userData) throws EmailException {
+	public ResponseEntity<User> create(@RequestBody User userData) {
 		// ==================================================================
 		LOG.info("user received");
 		// ==================================================================
@@ -53,6 +50,7 @@ public class Api {
 			// ==================================================================
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
+<<<<<<< HEAD
 		String uid = userData.getUid();
 		if (uid == null || uid.isEmpty()) {
 			userData.setActive(true);
@@ -84,26 +82,21 @@ public class Api {
 	public ResponseEntity<User> update(@RequestBody User userData) throws Exception {
 		Optional<User> userFromDatabase = userRepository.findById(userData.getUid());
 		if (!userFromDatabase.isPresent()) {
+=======
+		Optional<User> userFromDatabase = userRepository.findById(email);
+		if (userFromDatabase.isPresent()) {
+>>>>>>> PiotrDev
 			// ==================================================================
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("User not found by: " + userData.getEmail());
+				LOG.debug("user already exist: " + email);
 			}
 			// ==================================================================
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-		User user = userFromDatabase.get();
-		if (UserUtils.checkIfEqual(userData, user)) {
-			LOG.info("No change in user");
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
-
 		}
-		userData.setUid(user.getUid());
-		LOG.info("User edited");
-		EmailSender.editAccountEmail(userFromDatabase, userData);
-		return ResponseEntity.ok(userRepository.save(userData));
-
+		return ResponseEntity.ok(userRepository.insert(userData));
 	}
 
+<<<<<<< HEAD
 	@RequestMapping(path = "/delete/{userId}", method = RequestMethod.DELETE)
 	public ResponseEntity<User> delete(@PathVariable("userId") String userId) throws EmailException {
 		Optional<User> userFromDatabase = userRepository.findById(userId);
@@ -150,5 +143,12 @@ public class Api {
 
 		int n = rand.nextInt(999999) + 10000;
 		return n;
+=======
+	@RequestMapping(method = RequestMethod.GET)
+
+	public List<User> getAll() {
+		return userRepository.findAll();
+>>>>>>> PiotrDev
 	}
+
 }

@@ -1,10 +1,28 @@
 server:
  port: 8080
 spring:
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: test
+    password: secret
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    protocol: smtp
+    test-connection: false
  data:
    mongodb:
-     database: dane
+     database: baza
      port: 27017
+<<<<<<< HEAD
      host: localhost
 spring.freemarker.template-loader-path: classpath:/resources
 spring.freemarker.suffix: .ftl
+=======
+     host: 127.0.0.1
+>>>>>>> PiotrDev
