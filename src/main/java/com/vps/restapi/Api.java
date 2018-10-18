@@ -1,8 +1,8 @@
 package com.vps.restapi;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
 
@@ -22,8 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vps.restapi.model.User;
 import com.vps.restapi.model.UserRepository;
+import com.vps.restapi.utils.CommonUtils;
 import com.vps.restapi.utils.EmailSender;
 import com.vps.restapi.utils.UserUtils;
+
+import freemarker.core.ParseException;
+import freemarker.template.MalformedTemplateNameException;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateNotFoundException;
 
 //mapowanie rest
 @RestController
@@ -40,12 +46,13 @@ public class Api {
 	}
 
 	@RequestMapping(method = { RequestMethod.POST })
-	public ResponseEntity<User> create(@RequestBody User userData) throws EmailException {
+	public ResponseEntity<User> create(@RequestBody User userData) throws EmailException, TemplateNotFoundException,
+			MalformedTemplateNameException, ParseException, IOException, TemplateException {
 		// ==================================================================
 		LOG.info("user received");
 		// ==================================================================
 		String email = userData.getEmail();
-		userData.setToken(RandomInt());
+		userData.setToken(CommonUtils.randomInt());
 		if (email == null || email.isEmpty()) {
 			// ==================================================================
 			if (LOG.isDebugEnabled()) {
@@ -76,9 +83,15 @@ public class Api {
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET)
-	public List<User> getAll() {
-		return userRepository.findAll();
+	@RequestMapping(path = "/{status}", method = RequestMethod.GET)
+	public List<User> getAll(@PathVariable("status") String status) {
+		if (status == null || status.isEmpty()) {
+			return userRepository.findAll();
+		}
+		if (status.equals("active")) {
+			return userRepository.findByActive(true);
+		}
+		return userRepository.findByActive(false);
 	}
 
 	@RequestMapping(path = "/update", method = RequestMethod.PUT)
@@ -162,10 +175,4 @@ public class Api {
 
 	}
 
-	private int RandomInt() {
-		Random rand = new Random();
-
-		int n = rand.nextInt(999999) + 1;
-		return n;
-	}
 }

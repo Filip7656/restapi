@@ -1,6 +1,7 @@
 package com.vps.restapi.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,11 +13,16 @@ import org.apache.commons.mail.HtmlEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
-import com.vps.restapi.model.ConfigurationFreemarker;
 import com.vps.restapi.model.User;
 
+import freemarker.core.ParseException;
 import freemarker.template.Configuration;
+import freemarker.template.MalformedTemplateNameException;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateNotFoundException;
 
 public class EmailSender {
 	private static final Logger LOG = LoggerFactory.getLogger(EmailSender.class);
@@ -30,7 +36,8 @@ public class EmailSender {
 	@Autowired
 	private static Configuration freemarkerConfig;
 
-	public static void newAccountEmail(User userNew) throws EmailException {
+	public static void newAccountEmail(User userNew) throws EmailException, TemplateNotFoundException,
+			MalformedTemplateNameException, ParseException, IOException, TemplateException {
 		// zapytac o exception
 		String subject = "Hello " + userNew.getFirstName();
 		String message = "Hello " + userNew.getFirstName() + " " + userNew.getLastName();
@@ -42,9 +49,9 @@ public class EmailSender {
 		msg.append("</br>");
 		msg.append("</body></html>");
 
-		// Template t = freemarkerConfig.getTemplate("EmailTemplate.ftl");
-		// String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, userNew);
-		sendEmail(initHtmlEmail(), userNew.getEmail(), subject, msg.toString(), Collections.emptyMap());
+		Template t = freemarkerConfig.getTemplate("EmailTemplate.ftl");
+		String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, userNew);
+		sendEmail(initHtmlEmail(), userNew.getEmail(), subject, html, Collections.emptyMap());
 
 	}
 
@@ -74,7 +81,6 @@ public class EmailSender {
 		msg.append("<h3>" + passwordChange + "</h3>");
 
 		msg.append("</body></html>");
-		ConfigurationFreemarker.templateSet(userNew);
 
 		Map<String, File> imagesToEmbed = new HashMap<>();
 		File img = new File("C://Users/filip/Downloads/doors.jpg");
