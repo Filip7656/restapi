@@ -52,7 +52,7 @@ public class Api {
 		LOG.info("user received");
 		// ==================================================================
 		String email = userData.getEmail();
-		userData.setToken(CommonUtils.randomInt());
+		userData.setToken(CommonUtils.generateUuid());
 		if (email == null || email.isEmpty()) {
 			// ==================================================================
 			if (LOG.isDebugEnabled()) {
@@ -139,8 +139,8 @@ public class Api {
 
 	}
 
-	@RequestMapping(path = "/{token}")
-	public ResponseEntity<User> checkConfirmationEmail(@PathVariable("token") int token) throws EmailException {
+	@RequestMapping(path = "confirm/{token}")
+	public ResponseEntity<User> checkConfirmationEmail(@PathVariable("token") String token) throws EmailException {
 
 		Optional<User> userFromDatabase = userRepository.findByToken(token);
 		if (!userFromDatabase.isPresent()) {

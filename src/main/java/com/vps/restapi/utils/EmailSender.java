@@ -13,14 +13,12 @@ import org.apache.commons.mail.HtmlEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import com.vps.restapi.model.User;
 
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
 import freemarker.template.MalformedTemplateNameException;
-import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
 
@@ -41,7 +39,7 @@ public class EmailSender {
 		// zapytac o exception
 		String subject = "Hello " + userNew.getFirstName();
 		String message = "Hello " + userNew.getFirstName() + " " + userNew.getLastName();
-		String confirmation = "<br>Yr conf link: http://localhost:8080/user/" + userNew.getToken();
+		String confirmation = "<br>Yr conf link: http://localhost:8080/user/confirm/" + userNew.getToken();
 		StringBuffer msg = new StringBuffer();
 		msg.append("<html><body>");
 		msg.append("<br>");
@@ -49,9 +47,9 @@ public class EmailSender {
 		msg.append("</br>");
 		msg.append("</body></html>");
 
-		Template t = freemarkerConfig.getTemplate("EmailTemplate.ftl");
-		String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, userNew);
-		sendEmail(initHtmlEmail(), userNew.getEmail(), subject, html, Collections.emptyMap());
+		// Template t = freemarkerConfig.getTemplate("EmailTemplate.ftl");
+		// String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, userNew);
+		sendEmail(initHtmlEmail(), userNew.getEmail(), subject, msg.toString(), Collections.emptyMap());
 
 	}
 

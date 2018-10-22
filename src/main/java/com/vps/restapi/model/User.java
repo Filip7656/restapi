@@ -14,7 +14,7 @@ public class User implements Serializable {
 	private String password;
 	private Boolean active;
 	private Boolean confirmed;
-	private int token;
+	private String token;
 
 	public User() {
 		super();
@@ -101,12 +101,12 @@ public class User implements Serializable {
 		this.confirmed = confirmed;
 	}
 
-	public int getToken() {
+	public String getToken() {
 		return token;
 	}
 
-	public void setToken(int RandomInt) {
-		this.token = RandomInt;
+	public void setToken(String string) {
+		this.token = string;
 	}
 
 }

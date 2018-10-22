@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface UserRepository extends MongoRepository<User, String> {
 	public Optional<User> findByEmail(String email);
 
-	public Optional<User> findByToken(int token);
+	public Optional<User> findByToken(String token);
 
 	public List<User> findByActive(boolean active);
 }
