@@ -81,7 +81,7 @@ public class EmailSender {
 		msg.append("</body></html>");
 
 		Map<String, File> imagesToEmbed = new HashMap<>();
-		File img = new File("C://Users/filip/Downloads/doors.jpg");
+		File img = new File("C://filip.png");
 		imagesToEmbed.put(img.getName(), img);
 		sendEmail(initHtmlEmail(), userNew.getEmail(), subject, msg.toString(), imagesToEmbed);
 
@@ -101,7 +101,7 @@ public class EmailSender {
 		msg.append("</body></html>");
 
 		Map<String, File> imagesToEmbed = new HashMap<>();
-		File img = new File("C://Users/filip/Downloads/doors.jpg");
+		File img = new File("C://filip.png");
 		imagesToEmbed.put(img.getName(), img);
 		sendEmail(initHtmlEmail(), userDeleted.getEmail(), subject, msg.toString(), imagesToEmbed);
 	}
