@@ -24,6 +24,7 @@ import com.vps.restapi.model.User;
 import com.vps.restapi.model.UserRepository;
 import com.vps.restapi.utils.CommonUtils;
 import com.vps.restapi.utils.EmailSender;
+import com.vps.restapi.utils.LoginUtils;
 import com.vps.restapi.utils.UserUtils;
 
 import freemarker.core.ParseException;
@@ -79,7 +80,14 @@ public class Api {
 				return ResponseEntity.status(HttpStatus.CONFLICT).build();
 			}
 		}
-		return ResponseEntity.status(HttpStatus.OK).build();
+		ResponseEntity.status(HttpStatus.OK).build();
+		// ==================================================================
+		// get action destination view identity
+		String redirectUrl = "http://localhost:4200/";
+		// prepare and return redirect
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Location", redirectUrl);
+		return new ResponseEntity<User>(headers, HttpStatus.SEE_OTHER);
 
 	}
 
@@ -172,6 +180,35 @@ public class Api {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Location", redirectUrl);
 		return new ResponseEntity<User>(headers, HttpStatus.SEE_OTHER);
+
+	}
+
+	@RequestMapping(path = "/login", method = RequestMethod.POST)
+	public ResponseEntity<User> login(@RequestBody User userData) throws Exception {
+		Optional<User> userFromDatabase = userRepository.findByEmail(userData.getEmail());
+		if (!userFromDatabase.isPresent()) {
+			// ==================================================================
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("User not found by: " + userData.getEmail());
+			}
+			// ==================================================================
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		User user = userFromDatabase.get();
+		if (LoginUtils.checkIfEqual(userData, user)) {
+			LOG.info("User succesfully login in");
+			ResponseEntity.status(HttpStatus.OK).build();
+			// ==================================================================
+			// get action destination view identity
+			String redirectUrl = "http://localhost:4200/register";
+			// prepare and return redirect
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("Location", redirectUrl);
+			return new ResponseEntity<User>(headers, HttpStatus.SEE_OTHER);
+
+		}
+		LOG.info("Wrong data");
+		return ResponseEntity.status(HttpStatus.CONFLICT).build();
 
 	}
 
