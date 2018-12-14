@@ -32,7 +32,7 @@ public class EmailSender {
 	static String fromAddress = "noreply@service.com";
 
 	@Autowired
-	private static Configuration freemarkerConfig;
+	private static Configuration getFreeMarkerConfiguration;
 
 	public static void newAccountEmail(User userNew) throws EmailException, TemplateNotFoundException,
 			MalformedTemplateNameException, ParseException, IOException, TemplateException {
@@ -47,7 +47,7 @@ public class EmailSender {
 		msg.append("</br>");
 		msg.append("</body></html>");
 
-		// Template t = freemarkerConfig.getTemplate("EmailTemplate.ftl");
+		// Template t = getFreeMarkerConfiguration.getTemplate("emial-template.ftl");
 		// String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, userNew);
 		sendEmail(initHtmlEmail(), userNew.getEmail(), subject, msg.toString(), Collections.emptyMap());
 
@@ -81,7 +81,7 @@ public class EmailSender {
 		msg.append("</body></html>");
 
 		Map<String, File> imagesToEmbed = new HashMap<>();
-		File img = new File("C://filip.png");
+		File img = new File("C://Users/filip/Downloads/doors.jpg");
 		imagesToEmbed.put(img.getName(), img);
 		sendEmail(initHtmlEmail(), userNew.getEmail(), subject, msg.toString(), imagesToEmbed);
 
@@ -101,7 +101,7 @@ public class EmailSender {
 		msg.append("</body></html>");
 
 		Map<String, File> imagesToEmbed = new HashMap<>();
-		File img = new File("C://filip.png");
+		File img = new File("C://Users/Piotr/Desktop/filip.png");
 		imagesToEmbed.put(img.getName(), img);
 		sendEmail(initHtmlEmail(), userDeleted.getEmail(), subject, msg.toString(), imagesToEmbed);
 	}
@@ -136,6 +136,25 @@ public class EmailSender {
 		} catch (Exception ex) {
 			LOG.error("Unable to send email : " + ex);
 		}
+	}
+
+	public static void changePasswordEmail(User userPass) throws EmailException, TemplateNotFoundException,
+			MalformedTemplateNameException, ParseException, IOException, TemplateException {
+		String subject = "Hello " + userPass.getFirstName();
+		String message = "Hello " + userPass.getFirstName() + " " + userPass.getLastName();
+		String confirmation = "<p><a href=\"http://localhost:4200/passwordChange/?email=" + userPass.getEmail()
+				+ "\">To change your password click this link</a></p>";
+		StringBuffer msg = new StringBuffer();
+		msg.append("<html><body>");
+		msg.append("<br>");
+		msg.append(message + confirmation);
+		msg.append("</br>");
+		msg.append("</body></html>");
+
+// Template t = getFreeMarkerConfiguration.getTemplate("emial-template.ftl");
+// String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, userNew);
+		sendEmail(initHtmlEmail(), userPass.getEmail(), subject, msg.toString(), Collections.emptyMap());
+
 	}
 
 	// wyciagnac emaila do pliku, zrobic szablon freemaker dla nazw uzytkownika itp,

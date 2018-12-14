@@ -3,7 +3,7 @@ server:
 spring:
  data:
    mongodb:
-     database: dane
+     database: dane2
      port: 27017
      host: localhost
 spring.freemarker.template-loader-path: classpath:/resources

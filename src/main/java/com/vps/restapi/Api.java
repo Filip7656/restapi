@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.SpringVersion;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +23,6 @@ import com.vps.restapi.model.User;
 import com.vps.restapi.model.UserRepository;
 import com.vps.restapi.utils.CommonUtils;
 import com.vps.restapi.utils.EmailSender;
-import com.vps.restapi.utils.LoginUtils;
 import com.vps.restapi.utils.UserUtils;
 
 import freemarker.core.ParseException;
@@ -52,6 +50,10 @@ public class Api {
 		// ==================================================================
 		LOG.info("user received");
 		// ==================================================================
+		if (userRepository.existsById(userData.getEmail())) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+
 		String email = userData.getEmail();
 		userData.setToken(CommonUtils.generateUuid());
 		if (email == null || email.isEmpty()) {
@@ -80,14 +82,7 @@ public class Api {
 				return ResponseEntity.status(HttpStatus.CONFLICT).build();
 			}
 		}
-		ResponseEntity.status(HttpStatus.OK).build();
-		// ==================================================================
-		// get action destination view identity
-		String redirectUrl = "http://localhost:4200/";
-		// prepare and return redirect
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Location", redirectUrl);
-		return new ResponseEntity<User>(headers, HttpStatus.SEE_OTHER);
+		return ResponseEntity.status(HttpStatus.OK).build();
 
 	}
 
@@ -173,43 +168,75 @@ public class Api {
 			}
 			ResponseEntity.status(HttpStatus.CREATED).build();
 		}
-		// ==================================================================
-		// get action destination view identity
-		String redirectUrl = "http://localhost:4200/";
-		// prepare and return redirect
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Location", redirectUrl);
-		return new ResponseEntity<User>(headers, HttpStatus.SEE_OTHER);
+		return new ResponseEntity<User>(CommonUtils.redirectUrl(), HttpStatus.SEE_OTHER);
 
 	}
 
-	@RequestMapping(path = "/login", method = RequestMethod.POST)
-	public ResponseEntity<User> login(@RequestBody User userData) throws Exception {
-		Optional<User> userFromDatabase = userRepository.findByEmail(userData.getEmail());
+	@RequestMapping(path = "/login", method = RequestMethod.PUT)
+	public ResponseEntity<User> loginCheck(@RequestBody User userLog) throws EmailException {
+		Optional<User> userFromDatabase = userRepository.findByEmail(userLog.getEmail());
 		if (!userFromDatabase.isPresent()) {
 			// ==================================================================
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("User not found by: " + userData.getEmail());
+				LOG.debug("User not found by: " + userLog.getEmail());
 			}
 			// ==================================================================
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-		User user = userFromDatabase.get();
-		if (LoginUtils.checkIfEqual(userData, user)) {
-			LOG.info("User succesfully login in");
-			ResponseEntity.status(HttpStatus.OK).build();
-			// ==================================================================
-			// get action destination view identity
-			String redirectUrl = "http://localhost:4200/register";
-			// prepare and return redirect
-			HttpHeaders headers = new HttpHeaders();
-			headers.add("Location", redirectUrl);
-			return new ResponseEntity<User>(headers, HttpStatus.SEE_OTHER);
+		User userToCheck = userFromDatabase.get();
+		if (!userLog.getPassword().equals(userToCheck.getPassword())) {
+
+			LOG.error("Invalid Password");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		} else {
+			return new ResponseEntity<User>(CommonUtils.loginUrl(), HttpStatus.ACCEPTED);
 
 		}
-		LOG.info("Wrong data");
-		return ResponseEntity.status(HttpStatus.CONFLICT).build();
 
 	}
 
+	@RequestMapping(path = "/login/verifyemail", method = RequestMethod.PUT)
+	public ResponseEntity<User> userChangePassword(@RequestBody User userLog) throws EmailException,
+			TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
+		Optional<User> userFromDatabase = userRepository.findByEmail(userLog.getEmail());
+		LOG.info("email received");
+		if (!userFromDatabase.isPresent()) {
+			// ==================================================================
+			LOG.debug("User not found by: " + userLog.getEmail());
+
+			// ==================================================================
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		LOG.info("User found");
+		User userPass = userFromDatabase.get();
+		EmailSender.changePasswordEmail(userPass);
+		return new ResponseEntity<User>(CommonUtils.loginUrl(), HttpStatus.ACCEPTED);
+
+	}
+
+	@RequestMapping(path = "/login/changepass", method = RequestMethod.PUT)
+	public ResponseEntity<User> passwordCheck(@RequestBody User userLog) throws EmailException {
+		Optional<User> userFromDatabase = userRepository.findByEmail(userLog.getEmail());
+		LOG.info("user to passchange received");
+		if (!userFromDatabase.isPresent()) {
+			// ==================================================================
+			LOG.debug("User not found by: " + userLog.getEmail());
+
+			// ==================================================================
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		LOG.info("User found");
+		User userToCheck = userFromDatabase.get();
+		if (userLog.getPassword().equals(userToCheck.getPassword())) {
+
+			LOG.error("No change in password");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		} else {
+			userToCheck.setPassword(userLog.getPassword());
+			userRepository.save(userToCheck);
+			LOG.info("Password changed");
+			return new ResponseEntity<User>(CommonUtils.redirectUrl(), HttpStatus.ACCEPTED);
+		}
+
+	}
 }

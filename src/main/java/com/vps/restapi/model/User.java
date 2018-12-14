@@ -6,15 +6,16 @@ import org.springframework.data.annotation.Id;
 
 @SuppressWarnings("serial")
 public class User implements Serializable {
-	private String email;
 	@Id
 	private String uid;
+	private String email;
 	private String firstName;
 	private String lastName;
 	private String password;
 	private Boolean active;
 	private Boolean confirmed;
 	private String token;
+	private String permissions;
 
 	public User() {
 		super();
@@ -24,8 +25,8 @@ public class User implements Serializable {
 		return uid;
 	}
 
-	public void setUid(String i) {
-		this.uid = i;
+	public void setUid(String uid) {
+		this.uid = uid;
 	}
 
 	public String getFirstName() {
@@ -107,6 +108,14 @@ public class User implements Serializable {
 
 	public void setToken(String string) {
 		this.token = string;
+	}
+
+	public String getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(String permissions) {
+		this.permissions = permissions;
 	}
 
 }
